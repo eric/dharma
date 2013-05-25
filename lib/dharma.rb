@@ -31,6 +31,16 @@ module Dharma
     end
   end
 
+  def self.first_completed_of(promises)
+    p = Dharma.promise
+    promises.each do |promies|
+      promise.on_complete do |value|
+        p.try_complete(value)
+      end
+    end
+    p
+  end
+
   def self.trace_completion(tag, promise, logger = Rails.logger)
     promise.on_complete do |value, as|
       logger.info "#{tag}: #{as}: #{value.inspect}"
