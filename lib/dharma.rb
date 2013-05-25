@@ -4,6 +4,7 @@ module Dharma
   class PromiseFailure < RuntimeError; end
   class IllegalStateException < RuntimeError; end
   class TimeoutException < RuntimeError; end
+  class NoSuchElementException < RuntimeError; end
 
   def self.default_executor
     @default_executor ||= Dharma::ThreadExecutor.new

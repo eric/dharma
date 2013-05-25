@@ -47,7 +47,18 @@ module Dharma
       cb ||= block
       p = Dharma.promise
 
-      on_complete { |value| p.complete(cb.call(value)) }
+      on_complete do |value, as|
+        case as
+        when :failure
+          begin
+            p.complete(cb.call(value))
+          rescue => e
+            p.failure(e)
+          end
+        when :success
+          p.success(value)
+        end
+      end
 
       p
     end
@@ -64,7 +75,7 @@ module Dharma
           rescue => e
             p.failure(e)
           end
-        else
+        when :success
           p.complete(value)
         end
       end
@@ -78,9 +89,10 @@ module Dharma
 
       on_complete do |value, as|
         begin
-          if as == :success
+          case as
+          when :success
             p.success(cb.call(value))
-          else
+          when :failure
             p.failure(value)
           end
         rescue => e
@@ -97,19 +109,36 @@ module Dharma
 
       on_complete do |value, as|
         begin
-          if as == :success
+          case as
+          when :success
             cb.call(value).on_complete do |value2, as2|
-              if as2 == :success
+              case as2
+              when :success
                 p.success(value2)
-              else
+              when :failure
                 p.failure(value2)
               end
             end
-          else
+          when :failure
             p.failure(value)
           end
         rescue => e
           p.failure(e)
+        end
+      end
+
+      p
+    end
+
+    def failed
+      p = Dharma.promise
+
+      on_complete do |value, as|
+        case as
+        when :failure
+          p.success(value)
+        when :success
+          p.failure(NoSuchElementException.new("Future.failed not completed with an exception."))
         end
       end
 
