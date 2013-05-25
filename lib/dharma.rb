@@ -34,8 +34,8 @@ module Dharma
   def self.first_completed_of(promises)
     p = Dharma.promise
     promises.each do |promies|
-      promise.on_complete do |value|
-        p.try_complete(value)
+      promise.on_complete do |value, as|
+        p.try_complete(value, as)
       end
     end
     p
