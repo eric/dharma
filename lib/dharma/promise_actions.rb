@@ -71,5 +71,49 @@ module Dharma
 
       p
     end
+
+    def map(cb = nil, &block)
+      cb ||= block
+      p = Dharma.promise
+
+      on_complete do |value, as|
+        begin
+          if as == :success
+            p.success(cb.call(value))
+          else
+            p.failure(value)
+          end
+        rescue => e
+          p.failure(e)
+        end
+      end
+
+      p
+    end
+
+    def flat_map(cb = nil, &block)
+      cb ||= block
+      p = Dharma.promise
+
+      on_complete do |value, as|
+        begin
+          if as == :success
+            cb.call(value).on_complete do |value2, as2|
+              if as2 == :success
+                p.success(value2)
+              else
+                p.failure(value2)
+              end
+            end
+          else
+            p.failure(value)
+          end
+        rescue => e
+          p.failure(e)
+        end
+      end
+
+      p
+    end
   end
 end
