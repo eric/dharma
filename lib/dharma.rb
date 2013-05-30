@@ -1,5 +1,5 @@
 module Dharma
-  VERSION = '0.9.0'
+  VERSION = '0.9.1'
 
   class PromiseFailure < RuntimeError; end
   class IllegalStateException < RuntimeError; end
