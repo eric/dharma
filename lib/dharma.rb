@@ -47,6 +47,14 @@ module Dharma
       logger.info "#{tag}: #{as}: #{value.inspect}"
     end
   end
+
+  def self.ready(promise, duration = nil)
+    promise.ready(duration)
+  end
+
+  def self.result(promise, duration = nil)
+    promise.result(duration)
+  end
 end
 
 require 'dharma/promise'
